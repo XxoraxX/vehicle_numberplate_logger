@@ -42,7 +42,7 @@ This script uses tesseract_ocr to convert the image to text
 
 ###script #4
 
-This is the script which will read from a text file to give an indication is a blackmarked vehicle is detected
+This is the script which will read from a text file to give an indication if a blackmarked vehicle is detected
 
 ###script #5 
 
