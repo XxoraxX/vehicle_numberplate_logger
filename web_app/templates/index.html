@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vehicle Number Plate Logger</title>
+</head>
+<body>
+	<div id="recorder">
+  		<h1>Detected Vehicle</h1>
+  
+    	<button id="record">Record</button>
+    	<button id="stop">Stop</button>
+    	<a id="download"></a>
+    	<script type="text/javascript" src="{{ url_for('static', filename='recorder.js') }}"></script>      
+  
+  		<img id="video" src="{{ url_for('video_viewer') }}">
+  </div>
+</body>
+</html>
