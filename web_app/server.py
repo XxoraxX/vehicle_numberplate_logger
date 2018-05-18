@@ -1,9 +1,10 @@
 from flask import Flask, render_template, Response, jsonify, request
-from camera import VideoCamera
+from camera import VideoCamera , IPCamera
 
 app = Flask(__name__)
 
-video_camera = None
+#video_camera = IPCamera()
+video_camera = VideoCamera()
 global_frame = None
 
 @app.route('/')
