@@ -1,6 +1,40 @@
 <!DOCTYPE html>
 <html>
-<link rel="stylesheet" type="text/css" href="css/file.css">
+
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial;
+}
+
+.header {
+    text-align: center;
+    padding: 32px;
+}
+
+/* Create two equal columns that floats next to each other */
+.column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+}
+
+.column img {
+    margin-top: 12px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+</style>
 
 <head>
   <title>Vehicle Number Plate Logger</title>
@@ -9,6 +43,7 @@
 
 
 <body>
+<link rel="stylesheet" type="text/css" href="file.css">
 	
 
 
@@ -32,7 +67,7 @@
     		<a id="download"></a>
     		<script type="text/javascript" src="{{ url_for('static', filename='recorder.js') }}"></script>      
   
-  			<img id="video" src="{{ url_for('video_viewer') }}" alt="Cinque Terre" >
+  			<img id="processed_video" src="{{ url_for('processed_video') }}" alt="Cinque Terre"  style="width: 50%; height: 50%">
   		</div>
   
   
