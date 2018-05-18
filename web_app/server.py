@@ -40,6 +40,7 @@ def video_stream():
         
     while True:
         frame = video_camera.get_frame()
+
         
         if frame != None:
             global_frame = frame
@@ -52,8 +53,11 @@ def car_stream():
     
     while True:
         frame = video_camera.get_frame()
-        output = car_detector.detect_car(frame)
-
+        try:
+            output = car_detector.detect_car(frame)
+        except:
+            print "car_detector failed"
+            output = None    
         if output != None:
             
             yield (b'--frame\r\n'

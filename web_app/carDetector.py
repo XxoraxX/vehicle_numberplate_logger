@@ -14,16 +14,21 @@ class carDetector(object):
 	"""docstring for carDetector"""
 	def __init__(self):
 		#Code for car detector
-		self.car_cascade = cv2.CascadeClassifier('../cars.xml')
+		self.car_cascade = cv2.CascadeClassifier('../cascades/cars.xml')
 
 	def detect_car(self,frame):
-		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+		print "I am here"
+		try:
+			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+		except:
+			print "\n\nConversion on RGB to Greyscale failed\n\n"
+			gray = None	
 		cars = []
 		ncars = 0
 		try:
-			cars = car_cascade.detectMultiScale(gray, 1.4, 6)
+			cars = self.car_cascade.detectMultiScale(gray, 1.4, 6)
 		except:
-			print("Car detector failed")
+			print("\n\nCar detector failed\n\n")
 		# Draw border
 		for (x, y, w, h) in cars:
 			cv2.rectangle(frame, (x,y), (x+w,y+h), (0,0,255), 2)

@@ -11,7 +11,7 @@ import cv2
 from matplotlib import pyplot as plt
 
 #Code for car detector
-car_cascade = cv2.CascadeClassifier('cars.xml')
+car_cascade = cv2.CascadeClassifier('cascades/cars.xml')
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
