@@ -34,6 +34,7 @@ def record_status():
 def video_stream():
     global video_camera 
     global global_frame
+    global frame
 
     if video_camera == None:
         video_camera = VideoCamera()
@@ -49,19 +50,23 @@ def video_stream():
         else:
             yield (b'--frame\r\n'
                             b'Content-Type: image/jpeg\r\n\r\n' + global_frame + b'\r\n\r\n')
+
+            
 def car_stream():
+    global frame
     
     while True:
-        frame = video_camera.get_frame()
+        #frame = video_camera.get_frame()
+        print frame  , "                    \n\nFRAME                       "
         try:
             output = car_detector.detect_car(frame)
         except:
             print "car_detector failed"
             output = None    
-        if output != None:
+        if frame != None:
             
             yield (b'--frame\r\n'
-                    b'Content-Type: image/jpeg\r\n\r\n' + output + b'\r\n\r\n')
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
         else:
             yield (b'--frame\r\n'
                             b'Content-Type: image/jpeg\r\n\r\n' + global_frame + b'\r\n\r\n')
