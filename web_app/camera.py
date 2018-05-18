@@ -33,7 +33,7 @@ class RecordingThread (threading.Thread):
 class VideoCamera(object):
     def __init__(self):
         # Open a camera
-        self.cap = cv2.VideoCapture(1)
+        self.cap = cv2.VideoCapture(0)
         #self.cap = cv2.VideoCapture('192.168.43.1:8080/video')
         
         # Initialize video recording environment
