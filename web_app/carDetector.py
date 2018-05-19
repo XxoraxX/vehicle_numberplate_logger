@@ -14,7 +14,7 @@ class carDetector(object):
 	"""docstring for carDetector"""
 	def __init__(self):
 		#Code for car detector
-		self.car_cascade = cv2.CascadeClassifier('../cascades/cars.xml')
+		self.car_cascade = cv2.CascadeClassifier('cascades/cars.xml')
 		self.frame = None
 		self.detected_car = None
 	def update_frame(self,frame):
@@ -46,7 +46,7 @@ class carDetector(object):
 	def get_detected_car(self):
 		return self.detected_car
 
-		
+
 	def read_numberplate(img):
 		threshold_img = self.preprocess(img)
 		contours= extract_contours(threshold_img)
