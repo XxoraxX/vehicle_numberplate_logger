@@ -48,7 +48,7 @@ This is the script which will read from a text file to give an indication if a b
 
 This is the main script which will have a qt based UI
 
- 
+ ![](web_app/screenshot/updates.png) 
 
 ps:- The movie.mp4 will change accorning to the location and name of the video you intend to give as input .
 	
