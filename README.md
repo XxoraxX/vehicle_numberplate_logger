@@ -46,7 +46,9 @@ This is the script which will read from a text file to give an indication if a b
 
 ###script #5 
 
-This is the main script which will have a qt based UI
+This is the main script which will have a web based UI
+
+	python web_app/server.py
 
  ![](web_app/screenshot/updates.png) 
 
