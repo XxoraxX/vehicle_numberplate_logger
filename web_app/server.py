@@ -1,11 +1,31 @@
 from flask import Flask, render_template, Response, jsonify, request
 from camera import VideoCamera , IPCamera
 from carDetector import carDetector
+import cv2
+import argparse
+import imutils
+
+# construct the argument parse and parse the arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("-v", "--video",
+    help="path to the (optional) video file")
+ap.add_argument("-b", "--buffer", type=int, default=64,
+    help="max buffer size")
+args = vars(ap.parse_args())
+
+if not args.get("video", False):
+    video_camera = VideoCamera(0)
+    
+
+# otherwise, grab a reference to the video file
+else:
+    video_camera = VideoCamera(args["video"])
+    
 
 app = Flask(__name__)
 
 #video_camera = IPCamera()
-video_camera = VideoCamera()
+
 global_frame = None
 frame = None
 car_detector = carDetector()
@@ -34,42 +54,48 @@ def record_status():
 def video_stream():
     global video_camera 
     global global_frame
-    global frame
+   
 
     if video_camera == None:
         video_camera = VideoCamera()
         
     while True:
         frame = video_camera.get_frame()
+        car_detector.update_frame(frame)
 
+        try:
+            output = car_detector.detect_car()
+            
+        except:
+            print "car_detector failed"
+           
+       
+        ret, jpeg = cv2.imencode('.jpg', car_detector.get_frame())
+        jpeg = jpeg.tobytes()    
         
-        if frame != None:
+        if jpeg != None:
             global_frame = frame
             yield (b'--frame\r\n'
-                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+                    b'Content-Type: image/jpeg\r\n\r\n' + jpeg + b'\r\n\r\n')
         else:
             yield (b'--frame\r\n'
                             b'Content-Type: image/jpeg\r\n\r\n' + global_frame + b'\r\n\r\n')
 
             
 def car_stream():
-    global frame
+    
     
     while True:
-        #frame = video_camera.get_frame()
-        print frame  , "                    \n\nFRAME                       "
-        try:
-            output = car_detector.detect_car(frame)
-        except:
-            print "car_detector failed"
-            output = None    
-        if frame != None:
+        out_jpeg = None
+        ret, out_jpeg = cv2.imencode('.jpg', car_detector.get_detected_car())
+        out_jpeg = out_jpeg.tobytes()  
+        
+           
+        if out_jpeg != None:
             
             yield (b'--frame\r\n'
-                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-        else:
-            yield (b'--frame\r\n'
-                            b'Content-Type: image/jpeg\r\n\r\n' + global_frame + b'\r\n\r\n')
+                    b'Content-Type: image/jpeg\r\n\r\n' + out_jpeg + b'\r\n\r\n')
+       
 
 
 @app.route('/video_viewer')

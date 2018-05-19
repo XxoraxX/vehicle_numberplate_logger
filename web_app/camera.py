@@ -31,9 +31,9 @@ class RecordingThread (threading.Thread):
         self.out.release()
 
 class VideoCamera(object):
-    def __init__(self):
+    def __init__(self,argument):
         # Open a camera
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(argument)
         #self.cap = cv2.VideoCapture('192.168.43.1:8080/video')
         
         # Initialize video recording environment
@@ -50,23 +50,8 @@ class VideoCamera(object):
         ret, frame = self.cap.read()
 
         if ret:
-            ret, jpeg = cv2.imencode('.jpg', frame)
-
-            # Record video
-            # if self.is_record:
-            #     if self.out == None:
-            #         fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-            #         self.out = cv2.VideoWriter('./static/video.avi',fourcc, 20.0, (640,480))
-                
-            #     ret, frame = self.cap.read()
-            #     if ret:
-            #         self.out.write(frame)
-            # else:
-            #     if self.out != None:
-            #         self.out.release()
-            #         self.out = None  
-
-            return jpeg.tobytes()
+            
+            return frame
       
         else:
             return None

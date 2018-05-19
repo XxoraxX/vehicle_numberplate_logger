@@ -15,9 +15,15 @@ class carDetector(object):
 	def __init__(self):
 		#Code for car detector
 		self.car_cascade = cv2.CascadeClassifier('../cascades/cars.xml')
+		self.frame = None
+		self.detected_car = None
+	def update_frame(self,frame):
+		self.frame = frame
+	def get_frame(self):
+		return self.frame
 
-	def detect_car(self,frame):
-		print "I am here"
+	def detect_car(self):
+		frame = self.frame
 		try:
 			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 		except:
@@ -30,12 +36,17 @@ class carDetector(object):
 		except:
 			print("\n\nCar detector failed\n\n")
 		# Draw border
+
 		for (x, y, w, h) in cars:
 			cv2.rectangle(frame, (x,y), (x+w,y+h), (0,0,255), 2)
 			ncars = ncars + 1
-			cv2.imshow("Detected cars", frame)
+			self.detected_car = frame[y:y+h, x:x+w]
 			
-		return frame
+			
+	def get_detected_car(self):
+		return self.detected_car
+
+		
 	def read_numberplate(img):
 		threshold_img = self.preprocess(img)
 		contours= extract_contours(threshold_img)
