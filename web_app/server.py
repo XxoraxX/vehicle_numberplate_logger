@@ -87,6 +87,7 @@ def car_stream():
     
     while True:
         out_jpeg = None
+        print "\n\nFRAME", car_detector.get_detected_car()
         ret, out_jpeg = cv2.imencode('.jpg', car_detector.get_detected_car())
         out_jpeg = out_jpeg.tobytes()  
         
