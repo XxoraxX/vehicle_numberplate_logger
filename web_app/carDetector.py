@@ -14,7 +14,7 @@ class carDetector(object):
 	"""docstring for carDetector"""
 	def __init__(self):
 		#Code for car detector
-		self.car_cascade = cv2.CascadeClassifier('cascades/cars.xml')
+		self.car_cascade = cv2.CascadeClassifier('../cascades/cars.xml')
 		self.frame = None
 		self.detected_car = None
 	def update_frame(self,frame):
