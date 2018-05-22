@@ -4,6 +4,7 @@ from carDetector import carDetector
 import cv2
 import argparse
 import imutils
+from flask import g
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -51,11 +52,11 @@ def record_status():
         video_camera.stop_record()
         return jsonify(result="stopped")
 
-def video_stream():
+def video_stream(car_detector):
     global video_camera 
     global global_frame
    
-
+    #global car_detector
     if video_camera == None:
         video_camera = VideoCamera()
         
@@ -82,7 +83,7 @@ def video_stream():
                             b'Content-Type: image/jpeg\r\n\r\n' + global_frame + b'\r\n\r\n')
 
             
-def car_stream():
+def car_stream(car_detector):
     
     
     while True:
@@ -101,12 +102,12 @@ def car_stream():
 
 @app.route('/video_viewer')
 def video_viewer():
-    return Response(video_stream(),
+    return Response(video_stream(car_detector),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/processed_video')
 def processed_video():
-    return Response(car_stream(),
+    return Response(car_stream(car_detector),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
