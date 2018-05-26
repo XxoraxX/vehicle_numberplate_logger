@@ -25,7 +25,7 @@ def cleanPlate(plate):
 	#thresh= cv2.dilate(gray, kernel, iterations=1)
 
 	#_, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
-	_, thresh	   = cv.adaptiveThreshold(gray,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY,11,2)	
+	thresh	   = cv.adaptiveThreshold(gray,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY,11,2)	
 	im1,contours,hierarchy = cv2.findContours(thresh.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
 	if contours:
@@ -48,6 +48,7 @@ def cleanPlate(plate):
 
 
 def extract_contours(threshold_img):
+	
 	element = cv2.getStructuringElement(shape=cv2.MORPH_RECT, ksize=(17, 3))
 	morph_img_threshold = threshold_img.copy()
 	cv2.morphologyEx(src=threshold_img, op=cv2.MORPH_CLOSE, kernel=element, dst=morph_img_threshold)
@@ -128,6 +129,7 @@ def cleanAndRead(img,contours):
 					print "Detected Text : ",text
 					img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
 					cv2.imshow("Detected Plate",img)
+					return img , text
 					
 
 	#print "No. of final cont : " , count
