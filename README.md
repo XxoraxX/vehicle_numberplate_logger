@@ -1,13 +1,13 @@
 ## Folder contents
 
 - **QT**
-This folder contains the QT based UI scripts(Complete)
+This folder contains the QT based UI scripts *(Complete)*
 
 - **WebApp**
-This folder contains the Flask Based WebUI(Incomplete)
+This folder contains the Flask Based WebUI *(Incomplete)*
 
 - **Underwork**
-This is an improved version of the number plate detector 
+This is an improved version of the number plate detector *(Complete)*
 
 - **Individual Modules**
 This folder contains the individual Python Scripts for easy inspection analysis  
