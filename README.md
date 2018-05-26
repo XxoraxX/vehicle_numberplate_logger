@@ -9,6 +9,9 @@ This folder contains the Flask Based WebUI(Incomplete)
 - **Underwork**
 This is an improved version of the number plate detector 
 
+- **Individual Modules**
+This folder contains the individual Python Scripts for easy inspection analysis  
+
 - **DATA**
 This folder contains the 
 
