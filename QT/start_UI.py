@@ -62,7 +62,8 @@ def grab(cam, queue, width, height, fps):
         if queue.qsize() < 10:
             queue.put(frame)
         else:
-            print queue.qsize()
+            #print queue.qsize()
+            pass
 
 class OwnImageWidget(QtGui.QWidget):
     def __init__(self, parent=None):
@@ -173,11 +174,10 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
             try:
                 
                 output = car_detector.get_detected_car()
-                threshold_img = preprocess(img)
+                threshold_img = preprocess(output)
                 contours= extract_contours(threshold_img)
                 output , text = cleanAndRead(img,contours)
 
-                cv2.imshow("output",output)
                 print text
                 output_height, output_width, output_colors = output.shape
                 output_scale_w = float(self.window_width) / float(output_width)

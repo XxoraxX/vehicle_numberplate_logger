@@ -4,6 +4,8 @@ import cv2
 from copy import deepcopy
 from PIL import Image
 import pytesseract as tess
+import glob
+debug = False
 
 def preprocess(img):
 	
@@ -11,21 +13,22 @@ def preprocess(img):
 	gray = cv2.cvtColor(imgBlurred, cv2.COLOR_BGR2GRAY)
 
 	sobelx = cv2.Sobel(gray,cv2.CV_8U,1,0,ksize=3)
-	#cv2.imshow("Sobel",sobelx)
-	#cv2.waitKey(0)
+	if debug:
+		cv2.imshow("Sobel",sobelx)
+		#cv2.waitKey(0)
 	ret2,threshold_img = cv2.threshold(sobelx,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 	#cv2.imshow("Threshold",threshold_img)
 	#cv2.waitKey(0)
 	return threshold_img
 
 def cleanPlate(plate):
-	print "CLEANING PLATE. . ."
+	#print "CLEANING PLATE. . ."
 	gray = cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY)
 	#kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
 	#thresh= cv2.dilate(gray, kernel, iterations=1)
 
-	#_, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
-	thresh	   = cv.adaptiveThreshold(gray,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY,11,2)	
+	_, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+	#thresh	   = cv.adaptiveThreshold(gray,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY,11,2)	
 	im1,contours,hierarchy = cv2.findContours(thresh.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
 	if contours:
@@ -52,7 +55,9 @@ def extract_contours(threshold_img):
 	element = cv2.getStructuringElement(shape=cv2.MORPH_RECT, ksize=(17, 3))
 	morph_img_threshold = threshold_img.copy()
 	cv2.morphologyEx(src=threshold_img, op=cv2.MORPH_CLOSE, kernel=element, dst=morph_img_threshold)
-	cv2.imshow("Morphed",morph_img_threshold)
+	
+	if debug:
+		cv2.imshow("Morphed",morph_img_threshold)
 	#cv2.waitKey(0)
 
 	im2,contours, hierarchy= cv2.findContours(morph_img_threshold,mode=cv2.RETR_EXTERNAL,method=cv2.CHAIN_APPROX_NONE)
@@ -122,15 +127,17 @@ def cleanAndRead(img,contours):
 				if rect:
 					x1,y1,w1,h1 = rect
 					x,y,w,h = x+x1,y+y1,w1,h1
-					cv2.imshow("Cleaned Plate",clean_plate)
-					cv2.waitKey(0)
+					if debug:
+						cv2.imshow("Cleaned Plate",clean_plate)
+					#cv2.waitKey(0)
 					plate_im = Image.fromarray(clean_plate)
 					text = tess.image_to_string(plate_im, lang='eng')
 					print "Detected Text : ",text
 					img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
-					cv2.imshow("Detected Plate",img)
+					if debug:
+						cv2.imshow("Detected Plate",img)
 					return img , text
-					
+	return None , None			
 
 	#print "No. of final cont : " , count
 
@@ -138,18 +145,21 @@ def cleanAndRead(img,contours):
 
 if __name__ == '__main__':
 	print "DETECTING PLATE . . ."
+	List = glob.glob("../testData/*") 
+	#print(List)
 
 	#img = cv2.imread("testData/Final.JPG")
-	img = cv2.imread("testData/test.jpeg")
 
-	threshold_img = preprocess(img)
-	contours= extract_contours(threshold_img)
+	debug = True
+	for x in List:
+		pass
+		img = cv2.imread(x)
 
-	#if len(contours)!=0:
-		#print len(contours) #Test
-		# cv2.drawContours(img, contours, -1, (0,255,0), 1)
-		# cv2.imshow("Contours",img)
-		# cv2.waitKey(0)
+		threshold_img = preprocess(img)
+		contours= extract_contours(threshold_img)
+		cleanAndRead(img,contours)
+		key = cv2.waitKey(1) & 0xFF
 
-
-	cleanAndRead(img,contours)
+		# if the 'q' key is pressed, stop the loop
+		if key == ord("q"):
+			exit()
