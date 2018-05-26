@@ -21,7 +21,7 @@ base_script.py , this script is to read from webcam/video
 
 second_script.py , this script demonstrates how haar cascade can be used to detect the car .
 
-![](docs/detect_car.png) 
+![](../DATA/docs/detect_car.png) 
 
 webcam
 
@@ -35,7 +35,7 @@ Video
 ###script #3
 
 This script uses tesseract_ocr to convert the image to text 
-![](docs/detect_number.png) 
+![](../DATA/docs/detect_number.png) 
 
 	python third_script
 
@@ -44,13 +44,7 @@ This script uses tesseract_ocr to convert the image to text
 
 This is the script which will read from a text file to give an indication if a blackmarked vehicle is detected
 
-###script #5 
 
-This is the main script which will have a web based UI
-
-	python web_app/server.py
-
- ![](web_app/screenshot/updates.png) 
 
 ps:- The movie.mp4 will change accorning to the location and name of the video you intend to give as input .
 	

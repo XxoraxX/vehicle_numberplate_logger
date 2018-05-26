@@ -40,7 +40,7 @@ car_detector = carDetector()
 
 running = False
 capture_thread = None
-form_class = uic.loadUiType("../UI/simple.ui")[0]
+form_class = uic.loadUiType("../DATA/UI/simple.ui")[0]
 q = Queue.Queue()
 frame = {}
  

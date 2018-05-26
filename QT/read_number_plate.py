@@ -145,7 +145,7 @@ def cleanAndRead(img,contours):
 
 if __name__ == '__main__':
 	print "DETECTING PLATE . . ."
-	List = glob.glob("../testData/*") 
+	List = glob.glob("../DATA/testData/*") 
 	#print(List)
 
 	#img = cv2.imread("testData/Final.JPG")

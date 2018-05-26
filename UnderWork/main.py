@@ -9,8 +9,8 @@ logger = logging.getLogger();
 
 def run():
 
-	plates_array = loadImages("../testData/");
-	characters_array = loadCharacters("../characters/");
+	plates_array = loadImages("../DATA/testData/");
+	characters_array = loadCharacters("../DATA/characters/");
 	logger.info("All testing images and characters have been downloaded.");
 
 	for plate in plates_array:
