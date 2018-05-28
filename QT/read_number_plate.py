@@ -27,10 +27,11 @@ def cleanPlate(plate):
 	#kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
 	#thresh= cv2.dilate(gray, kernel, iterations=1)
 
-	_, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
-	#thresh	   = cv.adaptiveThreshold(gray,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY,11,2)	
+	#_, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+	thresh	   = cv.adaptiveThreshold(gray,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY,11,2)	
+	#thresh = (thresh1 + thresh2)/2	
 	im1,contours,hierarchy = cv2.findContours(thresh.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-
+	cv2.imshow("Function Test",thresh)
 	if contours:
 		areas = [cv2.contourArea(c) for c in contours]
 		max_index = np.argmax(areas)
@@ -43,7 +44,7 @@ def cleanPlate(plate):
 			return plate,None
 
 		cleaned_final = thresh[y:y+h, x:x+w]
-		#cv2.imshow("Function Test",cleaned_final)
+		
 		return cleaned_final,[x,y,w,h]
 
 	else:

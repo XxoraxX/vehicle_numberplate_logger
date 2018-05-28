@@ -4,6 +4,7 @@ import argparse
 import imutils
 import cv2
 from read_number_plate import *
+from pyANPD import *
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -31,18 +32,24 @@ def loop():
 
 	try:
 		car_detector.detect_car()
-		cv2.imshow("output",car_detector.get_detected_car())
+		#cv2.imshow("output",car_detector.get_detected_car())
 	except:
 		print "car_detector failed"
 
-	try:
-		threshold_img = preprocess(car_detector.get_detected_car())
-		contours= extract_contours(threshold_img)
-		cleanAndRead(car_detector.get_detected_car(),contours)
+	
+	try: 
+		output = process_image(frame, 0, type='rect')
+		cv2.imshow("Detected Number plate",output)
+		try:
+			threshold_img = preprocess(output)
+			contours= extract_contours(threshold_img)
+			cleanAndRead(car_detector.get_detected_car(),contours)
 
+		except:
+			print "Number plate reader failed"
 	except:
-		print "Number plate reader failed"
-
+		print "Plate detector failed"
+			
 	
 
 if __name__ == '__main__':

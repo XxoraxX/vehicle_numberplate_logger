@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-__author__      = "Saulius Lukse"
-__copyright__   = "Copyright 2016, kurokesu.com"
+__author__      = "Chris Sunny Thaliyath"
+__copyright__   = "Copyright 2018, advancedcv.github.io"
 __version__ = "0.1"
 __license__ = "GPL"
 
@@ -174,7 +174,7 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
             try:
                 
                 output = car_detector.get_detected_car()
-                threshold_img = preprocess(output)
+                threshold_img = preprocess(img)
                 contours= extract_contours(threshold_img)
                 output , text = cleanAndRead(img,contours)
 
