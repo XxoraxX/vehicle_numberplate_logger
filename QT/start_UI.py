@@ -19,6 +19,12 @@ import argparse
 import imutils
 import cv2
 from read_number_plate import *
+import dlib
+
+
+#load car detector
+detector = dlib.fhog_object_detector("../DATA/SVM/car_detector.svm")
+win = dlib.image_window()
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -133,10 +139,32 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
             frame = q.get()
             img = frame
 
+            img_height, img_width, img_colors = img.shape
+            scale_w = float(self.window_width) / float(img_width)
+            scale_h = float(self.window_height) / float(img_height)
+            scale = min([scale_w, scale_h])
+
+            if scale == 0:
+                scale = 1
+            
+            img = cv2.resize(img, None, fx=scale, fy=scale, interpolation = cv2.INTER_CUBIC)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            height, width, bpc = img.shape
+            bpl = bpc * width
+            image = QtGui.QImage(img.data, width, height, bpl, QtGui.QImage.Format_RGB888)
+            self.input.setImage(image)
+
+
+
+
             try:
-                car_detector.update_frame(img)
-                car_detector.detect_car()
-                output = car_detector.get_detected_car()
+                dets = detector(frame)
+                for d in dets:
+                    cv2.rectangle(frame, (d.left(), d.top()), (d.right(), d.bottom()), (0, 0, 255), 2)
+                    print (int(d.left()), int(d.top()) ), (int(d.right()), int(d.bottom()) )
+                    frame = frame[int(d.top()):int(d.bottom()+20),int(d.left()): int(d.right()+20)]
+                    #cv2.imshow("HOG output",frame)
+                output = frame
                 #cv2.imshow("output",output)
                 output_height, output_width, output_colors = output.shape
                 output_scale_w = float(self.window_width) / float(output_width)
@@ -155,28 +183,11 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
             except:
                 print "car_detector failed"
 
-            img_height, img_width, img_colors = img.shape
-            scale_w = float(self.window_width) / float(img_width)
-            scale_h = float(self.window_height) / float(img_height)
-            scale = min([scale_w, scale_h])
-
-            if scale == 0:
-                scale = 1
             
-            img = cv2.resize(img, None, fx=scale, fy=scale, interpolation = cv2.INTER_CUBIC)
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            height, width, bpc = img.shape
-            bpl = bpc * width
-            image = QtGui.QImage(img.data, width, height, bpl, QtGui.QImage.Format_RGB888)
-            self.input.setImage(image)
-
 
             try:
                 
-                output = car_detector.get_detected_car()
-                threshold_img = preprocess(img)
-                contours= extract_contours(threshold_img)
-                output , text = cleanAndRead(img,contours)
+                
 
                 print text
                 output_height, output_width, output_colors = output.shape

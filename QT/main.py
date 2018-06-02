@@ -39,7 +39,31 @@ def loop():
 		for d in dets:
 			cv2.rectangle(frame, (d.left(), d.top()), (d.right(), d.bottom()), (0, 0, 255), 2)
 			print (int(d.left()), int(d.top()) ), (int(d.right()), int(d.bottom()) )
-		frame = frame[int(d.top()): int(d.left()), int(d.bottom()):int(d.right())]
+		frame = frame[int(d.top()):int(d.bottom()),int(d.left()): int(d.right())]
+		cv2.imshow("HOG output",frame)
+		try: 
+			output = process_image(frame, 0, type='rect')
+			cv2.imshow("Detected Number plate",output)
+			try:
+				threshold_img = preprocess(output)
+				contours= extract_contours(threshold_img)
+				cleanAndRead(car_detector.get_detected_car(),contours)
+
+			except:
+				print "Number plate reader failed"
+		except:
+			print "Plate detector failed"
+			
+			
+	except:
+		print "HOG detector failed"
+
+	try:
+		dets = detector(frame)
+		for d in dets:
+			cv2.rectangle(frame, (d.left(), d.top()), (d.right(), d.bottom()), (0, 0, 255), 2)
+			print (int(d.left()), int(d.top()) ), (int(d.right()), int(d.bottom()) )
+		frame = frame[int(d.top()):int(d.bottom()),int(d.left()): int(d.right())]
 		cv2.imshow("HOG output",frame)
 		try: 
 			output = process_image(frame, 0, type='rect')
