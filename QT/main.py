@@ -32,8 +32,10 @@ car_detector = carDetector()
 
 def loop():
 	frame = video_camera.get_frame()
-	cv2.imshow("input",frame)
-
+	try:
+		cv2.imshow("input",frame)
+	except:
+		print "failed"	
 	try:
 		dets = detector(frame)
 		for d in dets:
