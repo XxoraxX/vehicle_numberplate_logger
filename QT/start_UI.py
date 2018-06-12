@@ -161,7 +161,7 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
                 dets = detector(frame)
                 for d in dets:
                     cv2.rectangle(frame, (d.left(), d.top()), (d.right(), d.bottom()), (0, 0, 255), 2)
-                    print (int(d.left()), int(d.top()) ), (int(d.right()), int(d.bottom()) )
+                    #print (int(d.left()), int(d.top()) ), (int(d.right()), int(d.bottom()) )
                     frame = frame[int(d.top()):int(d.bottom()+20),int(d.left()): int(d.right()+20)]
                     #cv2.imshow("HOG output",frame)
                 output = frame
