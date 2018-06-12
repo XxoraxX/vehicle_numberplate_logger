@@ -7,6 +7,8 @@ import pytesseract as tess
 import glob
 debug = False
 
+import Openalpr
+
 def preprocess(img):
 	
 	imgBlurred = cv2.GaussianBlur(img, (5,5), 0)
