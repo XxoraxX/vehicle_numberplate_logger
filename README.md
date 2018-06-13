@@ -37,3 +37,7 @@ This folder contains the
 ## install instruction
 
 	./install_dependencies.sh
+
+## To install spyder 
+	sudo apt-get install spyder*
+
