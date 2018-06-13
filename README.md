@@ -30,8 +30,10 @@ This folder contains the
 
 
 ## Clone the repository
+	cd 
 	git clone https://github.com/advancedCV/vehicle_numberplate_logger
-
+	cd vehicle_numberplate_logger
+	
 ## install instruction
 
 	./install_dependencies.sh
