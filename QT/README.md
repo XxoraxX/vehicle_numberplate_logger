@@ -28,7 +28,11 @@ This script starts the QT based UI
 
 ***HOG detector for car***
 
-	python hog_detector.py -v XXX	
+	python hog_detector.py -v XXX
+
+***OpenALPR number plate reader***
+	
+	python Openalpr.py -v ../../IM*	
 	
 ***Without UI***
 	
