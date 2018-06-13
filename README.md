@@ -27,3 +27,8 @@ This folder contains the
 ## Future improvements
 
 - Use of Neural Networks for OCR and Car detection
+
+
+## install instruction
+
+	./install_dependencies.sh
