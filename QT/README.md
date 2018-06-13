@@ -26,13 +26,16 @@ This script starts the QT based UI
 	python start_UI.py  -v XXX
 	
 
-	
+***HOG detector for car***
+
+	python hog_detector.py -v XXX	
 	
 ***Without UI***
 	
 	python main.py  -v  XXX
 	
 **what are the parameters**
+XXX
 
 for webcam
 	
