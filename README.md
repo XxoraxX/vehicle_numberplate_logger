@@ -29,6 +29,9 @@ This folder contains the
 - Use of Neural Networks for OCR and Car detection
 
 
+## Clone the repository
+	git clone https://github.com/advancedCV/vehicle_numberplate_logger
+
 ## install instruction
 
 	./install_dependencies.sh
