@@ -35,7 +35,11 @@ This folder contains the
 	cd vehicle_numberplate_logger
 	
 ## install instruction
-
+	
+	sudo apt-get update
+	sudo apt-get -f install
+	sudo apt-get dist-upgrade
+	sudo apt-get upgrade
 	./install_dependencies.sh
 
 ## To install spyder 
