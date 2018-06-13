@@ -41,3 +41,12 @@ This folder contains the
 ## To install spyder 
 	sudo apt-get install spyder*
 
+
+## fix virtualbox
+
+	sudo mount /dev/cdrom /mnt
+	cd /mnt
+	sudo dnf install -y dkms kernel-devel kernel-devel-$(uname -r)
+	sudo su
+	./VBoxLinuxAdditions.run
+
