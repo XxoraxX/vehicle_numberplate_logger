@@ -191,15 +191,15 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
                 _,_,output = (read_number_plate(frame))
 
                 
-                output_height, output_width, output_colors = output.shape
-                output_scale_w = float(self.window_width) / float(output_width)
-                output_scale_h = float(self.window_height) / float(output_height)
-                output_scale = min([output_scale_w, output_scale_h])
+                #output_height, output_width, output_colors = output.shape
+                #output_scale_w = float(self.window_width) / float(output_width)
+                #output_scale_h = float(self.window_height) / float(output_height)
+                #output_scale = min([output_scale_w, output_scale_h])
 
-                if output_scale == 0:
-                    output_scale = 1
+                #if output_scale == 0:
+                #    output_scale = 1
             
-                output = cv2.resize(output, None, fx=output_scale, fy=output_scale, interpolation = cv2.INTER_CUBIC)
+                output = cv2.resize(output, None, fx=1, fy=output_scale, interpolation = cv2.INTER_CUBIC)
                 output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
                 output_height, output_width, output_bpc = output.shape
                 output_bpl = output_bpc * output_width
