@@ -199,7 +199,7 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
                 #if output_scale == 0:
                 #    output_scale = 1
             
-                output = cv2.resize(output, None, fx=1, fy=output_scale, interpolation = cv2.INTER_CUBIC)
+                output = cv2.resize(output, None, fx=1, fy=1, interpolation = cv2.INTER_CUBIC)
                 output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
                 output_height, output_width, output_bpc = output.shape
                 output_bpl = output_bpc * output_width
