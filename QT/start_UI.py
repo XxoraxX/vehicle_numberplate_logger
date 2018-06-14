@@ -20,6 +20,7 @@ import imutils
 import cv2
 from read_number_plate import *
 import dlib
+from Openalpr import read_number_plate
 
 
 #load car detector
@@ -187,9 +188,9 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
 
             try:
                 
-                
+                _,_,output = (read_number_plate(frame))
 
-                print text
+                
                 output_height, output_width, output_colors = output.shape
                 output_scale_w = float(self.window_width) / float(output_width)
                 output_scale_h = float(self.window_height) / float(output_height)

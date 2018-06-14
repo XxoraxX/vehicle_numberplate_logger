@@ -28,4 +28,4 @@ make
 
 # Install the binaries/libraries to your local system (prefix is /usr)
 sudo make install
-
+sudo apt-get install python-qt4

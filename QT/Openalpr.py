@@ -37,11 +37,12 @@ def read_number_plate(im):
 	#results = alpr.recognize_file("/home/chris/Desktop/vehicle_numberplate_logger/DATA/testData/self-driving.jpg")
 	results = alpr.recognize_ndarray(im)
 	i = 0
+	#print results
 	plate = results['results'][0]
 	candidate = plate['candidates'][0]
 	#plate_coordinates = plate['candidates']['coordinates']
 	#print plate_coordinates	
-		
+	plate_coordinates = results['results'][0]['coordinates']	
 	#print candidate
 	#for plate in results['results']:
     		#i += 1
@@ -55,11 +56,12 @@ def read_number_plate(im):
         	#	print("  %s %12s%12f" % (prefix, candidate['plate'], candidate['confidence']))
 		#print plate
 	#candidate = plate['candidates'] in max(plate['candidates']['confidence'])
-	print("   %12s%12f" % ( candidate['plate'], candidate['confidence']))
+	#print("   %12s%12f" % ( candidate['plate'], candidate['confidence']))
 
 		# Call when completely done to release memory
 	alpr.unload()
-	return candidate['plate'] , candidate['confidence']
+	im = im[plate_coordinates[0]['y']:plate_coordinates[2]['y']+20, plate_coordinates[0]['x']:plate_coordinates[1]['x']+20]
+	return candidate['plate'] , candidate['confidence'] , im
 
 
 if __name__ == '__main__':
@@ -78,7 +80,8 @@ if __name__ == '__main__':
 		try:
 			out = detect_car(frame)
 			try: 	
-				read_number_plate(out)
+				_,_,out = (read_number_plate(out))
+				cv2.imshow("cropped plate",out)
 				#read_number_plate(frame)
 			except:
 				print "numberplate not found"
