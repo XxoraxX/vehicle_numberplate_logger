@@ -42,6 +42,9 @@ This folder contains the
 	sudo apt-get upgrade
 	./install_dependencies.sh
 
+	sudo apt-get install python-qt4
+	sudo apt-get install python-pyqt5
+
 ## To install spyder 
 	sudo apt-get install spyder*
 
