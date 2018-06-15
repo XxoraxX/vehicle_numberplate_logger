@@ -217,9 +217,9 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
                 self.numberplate.setImage(output_image)
                 now = time.time()
                 
-                if (now - self.last_time > 2):
-                    output_text = numberplate +" "+ now
-                    self.carLog.addItems([numberplate])
+                if (now - self.last_time > 5):
+                    
+                    self.carLog.addItems([(numberplate)])
                     self.last_time = now
             except:
                 print "numberplate detector falied"
