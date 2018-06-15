@@ -49,6 +49,14 @@ This folder contains the
 	sudo apt-get install spyder*
 
 
+## To install opencv
+
+	./install_opencv.sh
+
+## To install OpenAlpr
+
+	./install_openalpr.sh
+
 ## fix virtualbox
 
 	sudo mount /dev/cdrom /mnt
