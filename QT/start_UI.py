@@ -218,8 +218,8 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
                 now = time.time()
                 
                 if (now - self.last_time > 2):
-                    
-                    self.carLog.addItems([(numberplate)])
+                    output_text = numberplate +" "+ now
+                    self.carLog.addItems([output_text])
                     self.last_time = now
             except:
                 print "numberplate detector falied"
