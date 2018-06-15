@@ -7,6 +7,8 @@ __license__ = "GPL"
 
 
 from PyQt4 import QtCore, QtGui, uic
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 import sys
 import cv2
 import numpy as np
@@ -21,6 +23,8 @@ import cv2
 from read_number_plate import *
 import dlib
 from Openalpr import read_number_plate
+import time 
+last_time = time.time() - 5
 
 
 #load car detector
@@ -93,9 +97,14 @@ class OwnImageWidget(QtGui.QWidget):
 
 
 class MyWindowClass(QtGui.QMainWindow, form_class):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None ):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
+	
+	#super(Form,self).__init__(parent)
+	
+        self.carLog = QListWidget(self.carLog)
+        
 
         self.startButton.clicked.connect(self.start_clicked)
         self.stopButton.clicked.connect(self.stop_clicked)
@@ -109,6 +118,7 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(.1)
+        self.last_time = time.time()
 
 
     def start_clicked(self):
@@ -188,8 +198,8 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
 
             try:
                 
-                _,_,output = (read_number_plate(frame))
-
+                numberplate,confidence,output = (read_number_plate(frame))
+                
                 
                 #output_height, output_width, output_colors = output.shape
                 #output_scale_w = float(self.window_width) / float(output_width)
@@ -205,11 +215,16 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
                 output_bpl = output_bpc * output_width
                 output_image = QtGui.QImage(output.data, output_width, output_height, output_bpl, QtGui.QImage.Format_RGB888)
                 self.numberplate.setImage(output_image)
+                now = time.time()
+                
+                if (now - self.last_time > 2):
+                    
+                    self.carLog.addItems([(numberplate)])
+                    self.last_time = now
             except:
                 print "numberplate detector falied"
             
-
-
+            
             
 
     def closeEvent(self, event):
@@ -217,13 +232,113 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
         running = False
 
 
+class Form(QDialog):
+
+    def __init__(self,fruit,parent=None):
+        super(Form,self).__init__(parent)
+        self.qListWidget = QListWidget()
+        self.qListWidget.addItems(fruit)
+
+        button1 = QPushButton("Add")
+        button2 = QPushButton("Remove")
+        button3 = QPushButton("Edit")
+        button4 = QPushButton("Up")
+        button6 = QPushButton("Sort")
+        button7 = QPushButton("Close")
+        
+
+        buttonLayout = QVBoxLayout()
+        buttonLayout.addWidget(button1)
+        buttonLayout.addWidget(button2)
+        buttonLayout.addWidget(button3) 
+        buttonLayout.addWidget(button4)
+        buttonLayout.addWidget(button6)
+        buttonLayout.addWidget(button7)
+
+
+        layout = QHBoxLayout()
+        layout.addWidget(self.qListWidget)
+        layout.addLayout(buttonLayout)
+        self.setLayout(layout)
+
+        self.setWindowTitle("QListWidget")
+
+        self.connect(button1,SIGNAL("clicked()"),self.Add)
+        self.connect(button2,SIGNAL("clicked()"),self.Remove)
+        self.connect(button3,SIGNAL("clicked()"),self.Edit)
+        self.connect(button4,SIGNAL("clicked()"),self.Up)
+        self.connect(button6,SIGNAL("clicked()"),self.Sort)
+        self.connect(button7,SIGNAL("clicked()"),self.accept)
+        
+
+
+    def Add(self):
+
+        self.text,ok = QInputDialog.getText(self,'Input Dialog','Enter Value')
+
+        if ok:
+                  print self.text  
+                  self.qListWidget.addItem(self.text)
+
+
+    def Remove(self):
+        row = self.qListWidget.currentRow()
+        item = self.qListWidget.takeItem(row)
+        del item
+            
+    
+    def Edit(self):
+        
+        text_replace,ok = QInputDialog.getText(self,'Input Dialog','Enter Value')
+        current_item_row = self.qListWidget.currentRow()
+        current_item_text = self.qListWidget.item(current_item_row)
+        current_item_text.setText(text_replace)
+
+
+
+
+    def Up(self):
+       
+        current_item_row = self.qListWidget.currentRow()
+        if current_item_row > 0:
+            current_item_text = self.qListWidget.item(current_item_row)
+            print str(current_item_text.text())
+
+            up_item_row = current_item_row - 1
+            up_item_text = self.qListWidget.item(up_item_row)
+            print str(up_item_text.text())
+
+            self.qListWidget.takeItem(current_item_row)
+            self.qListWidget.insertItem(current_item_row,up_item_text.text())
+            self.qListWidget.takeItem(up_item_row)
+            self.qListWidget.insertItem(up_item_row,current_item_text.text())
+        else:
+              print "Already at top of list."
+
+    def Sort(self):
+        self.qListWidget.sortItems()
+
+
+    def reject(self):
+        self.accept()
+
+    def accept(self):
+        QDialog.done(self,0)
+
 
 capture_thread = threading.Thread(target=grab, args = (0, q, 1920, 1080, 30))
 
+
+
 app = QtGui.QApplication(sys.argv)
-w = MyWindowClass(None)
+#fruit = ["Apple","Banana","Guave","Grape","Papaya","Mango"]
+#form = Form(fruit)
+w = MyWindowClass(None )
 w.setWindowTitle('Vehicle_Number_plate_logger')
 w.show()
+
+
+#form.show()
 app.exec_()
 
 
