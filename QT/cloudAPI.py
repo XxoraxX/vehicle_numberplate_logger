@@ -51,7 +51,7 @@ def return_info(frame):
     			img_base64 = base64.b64encode(image_file.read())
 		url = 'https://api.openalpr.com/v2/recognize_bytes?recognize_vehicle=1&country=us&secret_key=%s' % (SECRET_KEY)
 		r = requests.post(url, data = img_base64)
-		#print(json.dumps(r.json(), indent=2))
+		print(json.dumps(r.json(), indent=2))
 		plate = r['results'][0]
 		candidate = plate['candidates'][0]
 		plate_coordinates = r['results'][0]['coordinates']
