@@ -10,7 +10,7 @@ sudo apt-get install libgtk2.0-dev
 sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
 sudo apt-get install libatlas-base-dev gfortran
 sudo apt-get install libhdf5-serial-dev
-cd
+cd ~
 
 #wget -O opencv.zip https://github.com/Itseez/opencv/archive/3.1.0.zip
 #wget -O opencv.zip https://github.com/opencv/opencv/archive/3.3.0.zip
