@@ -26,7 +26,7 @@ else:
 
 
 def read_number_plate(im):
-	alpr = Alpr("my", "../DATA/runtime_data/config/my.conf", "../DATA/runtime_data")
+	alpr = Alpr("us", "../DATA/runtime_data/config/us.conf", "../DATA/runtime_data")
 	if not alpr.is_loaded():
     		print("Error loading OpenALPR")
     		sys.exit(1)

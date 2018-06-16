@@ -8,7 +8,7 @@ from pyANPD import *
 import dlib
 import threading
 import os
-import detect
+#import detect
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()

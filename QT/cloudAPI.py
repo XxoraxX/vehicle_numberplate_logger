@@ -1,20 +1,79 @@
-import time
-import openalpr_api
-from openalpr_api.rest import ApiException
-from pprint import pprint
-# create an instance of the API class
-api_instance = openalpr_api.DefaultApi()
-image_bytes = 'image_bytes_example' # str | The image file that you wish to analyze encoded in base64 
-secret_key = 'secret_key_example' # str | The secret key used to authenticate your account.  You can view your  secret key by visiting  https://cloud.openalpr.com/ 
-country = 'country_example' # str | Defines the training data used by OpenALPR.  \"us\" analyzes  North-American style plates.  \"eu\" analyzes European-style plates.  This field is required if using the \"plate\" task  You may use multiple datasets by using commas between the country  codes.  For example, 'au,auwide' would analyze using both the  Australian plate styles.  A full list of supported country codes  can be found here https://github.com/openalpr/openalpr/tree/master/runtime_data/config 
-recognize_vehicle = 0 # int | If set to 1, the vehicle will also be recognized in the image This requires an additional credit per request  (optional) (default to 0)
-state = '' # str | Corresponds to a US state or EU country code used by OpenALPR pattern  recognition.  For example, using \"md\" matches US plates against the  Maryland plate patterns.  Using \"fr\" matches European plates against  the French plate patterns.  (optional) (default to )
-return_image = 0 # int | If set to 1, the image you uploaded will be encoded in base64 and  sent back along with the response  (optional) (default to 0)
-topn = 10 # int | The number of results you would like to be returned for plate  candidates and vehicle classifications  (optional) (default to 10)
-prewarp = '' # str | Prewarp configuration is used to calibrate the analyses for the  angle of a particular camera.  More information is available here http://doc.openalpr.com/accuracy_improvements.html#calibration  (optional) (default to )
+#!/usr/bin/python
 
-try:
-    api_response = api_instance.recognize_bytes(image_bytes, secret_key, country, recognize_vehicle=recognize_vehicle, state=state, return_image=return_image, topn=topn, prewarp=prewarp)
-    pprint(api_response)
-except ApiException as e:
-    print "Exception when calling DefaultApi->recognize_bytes: %s\n" % e
+import requests
+import base64
+import json
+import dlib
+from carDetector import carDetector
+from camera import VideoCamera , IPCamera
+import argparse
+import imutils
+import cv2
+
+# Sample image file is available at http://plates.openalpr.com/ea7the.jpg
+IMAGE_PATH = 'frame.jpg'
+SECRET_KEY = 'sk_df1b80fc1591519b091f2726'
+
+
+# construct the argument parse and parse the arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("-v", "--video",
+    help="path to the (optional) video file")
+ap.add_argument("-b", "--buffer", type=int, default=64,
+    help="max buffer size")
+ap.add_argument("-m", "--model",
+    help="path to trained model")
+args = vars(ap.parse_args())
+
+if not args.get("video", False):
+    video_camera = VideoCamera(0)
+    # otherwise, grab a reference to the video file
+else:
+    video_camera = VideoCamera(args["video"])
+
+
+car_detector = carDetector()  
+#load car detector
+detector = dlib.fhog_object_detector("../DATA/SVM/car_detector.svm")
+win = dlib.image_window()
+
+def return_info(frame):
+	try:
+                dets = detector(frame)
+                for d in dets:
+                    cv2.rectangle(frame, (d.left(), d.top()), (d.right(), d.bottom()), (0, 0, 255), 2)
+                    #print (int(d.left()), int(d.top()) ), (int(d.right()), int(d.bottom()) )
+                    frame = frame[int(d.top()):int(d.bottom()+20),int(d.left()): int(d.right()+20)]
+                cv2.imshow("HOG output",frame)
+                
+		cv2.imwrite("frame.jpg",frame)
+		with open(IMAGE_PATH, 'rb') as image_file:
+    			img_base64 = base64.b64encode(image_file.read())
+		url = 'https://api.openalpr.com/v2/recognize_bytes?recognize_vehicle=1&country=us&secret_key=%s' % (SECRET_KEY)
+		r = requests.post(url, data = img_base64)
+		#print(json.dumps(r.json(), indent=2))
+		plate = r['results'][0]
+		candidate = plate['candidates'][0]
+		plate_coordinates = r['results'][0]['coordinates']
+		im = frame[plate_coordinates[0]['y']:plate_coordinates[2]['y']+20, plate_coordinates[0]['x']:plate_coordinates[1]['x']+20]
+		return candidate['plate'] , candidate['confidence'] , im
+	except:
+		print "HOG detector failed"
+	
+	return 0 , 0, 0
+
+if __name__ == '__main__':
+	
+	while True:
+		frame = video_camera.get_frame()
+		try:
+			cv2.imshow("input",frame)
+		except:
+			print "failed"	
+		plate , confidence , _ = return_info(frame)
+		print plate , confidence
+		key = cv2.waitKey(1) & 0xFF
+
+		# if the 'q' key is pressed, stop the loop
+		if key == ord("q"):
+			break
