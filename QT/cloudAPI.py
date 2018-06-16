@@ -51,16 +51,25 @@ def return_info(frame):
     			img_base64 = base64.b64encode(image_file.read())
 		url = 'https://api.openalpr.com/v2/recognize_bytes?recognize_vehicle=1&country=us&secret_key=%s' % (SECRET_KEY)
 		r = requests.post(url, data = img_base64)
-		print(json.dumps(r.json(), indent=2))
-		plate = r['results'][0]
-		candidate = plate['candidates'][0]
-		plate_coordinates = r['results'][0]['coordinates']
+		
+		#print(json.dumps(r.json(), indent=2))
+		
+		plate = r.json()['results'][0]['plate']
+		
+		confidence = r.json()['results'][0]['confidence']
+		
+		plate_coordinates = r.json()['results'][0]['coordinates']
+		vehicle_colour = r.json()['results'][0]['vehicle']['color'][0]['name']
+		vehicle_make = r.json()['results'][0]['vehicle']['make'][0]['name']
+		vehicle_body_type = r.json()['results'][0]['vehicle']['body_type'][0]['name']
+		vehicle_year = r.json()['results'][0]['vehicle']['year'][0]['name']
+		vehicle_make_model = r.json()['results'][0]['vehicle']['make_model'][0]['name']
 		im = frame[plate_coordinates[0]['y']:plate_coordinates[2]['y']+20, plate_coordinates[0]['x']:plate_coordinates[1]['x']+20]
-		return candidate['plate'] , candidate['confidence'] , im
+		return plate , confidence , vehicle_colour , vehicle_make, vehicle_body_type, vehicle_year , vehicle_make_model , im
 	except:
 		print "HOG detector failed"
 	
-	return 0 , 0, 0
+	return 0 , 0, 0 ,0,0,0,0,0
 
 if __name__ == '__main__':
 	
@@ -70,8 +79,9 @@ if __name__ == '__main__':
 			cv2.imshow("input",frame)
 		except:
 			print "failed"	
-		plate , confidence , _ = return_info(frame)
-		print plate , confidence
+		plate , confidence,colour , make , body_type , year ,make_model , number_plate = return_info(frame)
+		print plate , confidence,colour , make , body_type , year ,make_model
+		cv2.imshow("number_plate",number_plate)
 		key = cv2.waitKey(1) & 0xFF
 
 		# if the 'q' key is pressed, stop the loop
