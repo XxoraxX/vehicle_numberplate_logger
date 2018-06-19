@@ -33,9 +33,10 @@ else:
 
 
 car_detector = carDetector()  
-#load car detector
 detector = dlib.fhog_object_detector("../DATA/SVM/car_detector.svm")
 win = dlib.image_window()
+
+
 
 def return_info(frame):
 	SECRET_KEY = 'sk_df1b80fc1591519b091f2726'

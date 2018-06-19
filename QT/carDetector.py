@@ -10,6 +10,10 @@ from copy import deepcopy
 from PIL import Image
 import pytesseract as tess
 
+
+# This is a haar cascade method of classification 
+
+
 class carDetector(object):
 	"""docstring for carDetector"""
 	def __init__(self):

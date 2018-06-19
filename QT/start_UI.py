@@ -15,7 +15,7 @@ import numpy as np
 import threading
 import time
 import Queue
-from carDetector import carDetector
+from hog_detector import detect_car
 from camera import VideoCamera , IPCamera
 import argparse
 import imutils
@@ -46,8 +46,6 @@ else:
     video_camera = VideoCamera(args["video"])
 
 
-car_detector = carDetector() 
-
 
 running = False
 capture_thread = None
@@ -58,18 +56,12 @@ frame = {}
 
 def grab(cam, queue, width, height, fps):
     global running
-    #capture = cv2.VideoCapture(cam)
-    #capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-    #capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-    #capture.set(cv2.CAP_PROP_FPS, fps)
+    
 
     while running:
-        #frame = {}        
-        #capture.grab()
-        #retval, img = capture.retrieve(0)
+       
         frame = video_camera.get_frame()
-        #frame["img"] = img
-
+       
         if queue.qsize() < 10:
             queue.put(frame)
         else:
@@ -141,137 +133,8 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
         capture_thread.stop()
         self.stopButton.setEnabled(False)
         self.stopButton.setText('Starting...')
-
-
-    def update_frame(self):
-        global q
-        if not q.empty():
-            #self.startButton.setText('Camera is live')
-            frame = q.get()
-            img = frame
-
-            img_height, img_width, img_colors = img.shape
-            scale_w = float(self.window_width) / float(img_width)
-            scale_h = float(self.window_height) / float(img_height)
-            scale = min([scale_w, scale_h])
-
-            if scale == 0:
-                scale = 1
-            
-            img = cv2.resize(img, None, fx=scale, fy=scale, interpolation = cv2.INTER_CUBIC)
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            height, width, bpc = img.shape
-            bpl = bpc * width
-            image = QtGui.QImage(img.data, width, height, bpl, QtGui.QImage.Format_RGB888)
-            self.input.setImage(image)
-
-
-
-
-            try:
-                dets = detector(frame)
-                for d in dets:
-                    cv2.rectangle(frame, (d.left(), d.top()), (d.right(), d.bottom()), (0, 0, 255), 2)
-                    #print (int(d.left()), int(d.top()) ), (int(d.right()), int(d.bottom()) )
-                    frame = frame[int(d.top()):int(d.bottom()+20),int(d.left()): int(d.right()+20)]
-                    #cv2.imshow("HOG output",frame)
-                output = frame
-                #cv2.imshow("output",output)
-                output_height, output_width, output_colors = output.shape
-                output_scale_w = float(self.window_width) / float(output_width)
-                output_scale_h = float(self.window_height) / float(output_height)
-                output_scale = min([output_scale_w, output_scale_h])
-
-                if output_scale == 0:
-                    output_scale = 1
-            
-                output = cv2.resize(output, None, fx=output_scale, fy=output_scale, interpolation = cv2.INTER_CUBIC)
-                output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
-                output_height, output_width, output_bpc = output.shape
-                output_bpl = output_bpc * output_width
-                output_image = QtGui.QImage(output.data, output_width, output_height, output_bpl, QtGui.QImage.Format_RGB888)
-                self.detectedcar.setImage(output_image)
-            except:
-                print "car_detector failed"
-
-            
-
-            try:
-                
-                numberplate,confidence,output = (read_number_plate(frame))
-                
-                
-                #output_height, output_width, output_colors = output.shape
-                #output_scale_w = float(self.window_width) / float(output_width)
-                #output_scale_h = float(self.window_height) / float(output_height)
-                #output_scale = min([output_scale_w, output_scale_h])
-
-                #if output_scale == 0:
-                #    output_scale = 1
-            
-                output = cv2.resize(output, None, fx=1, fy=1, interpolation = cv2.INTER_CUBIC)
-                output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
-                output_height, output_width, output_bpc = output.shape
-                output_bpl = output_bpc * output_width
-                output_image = QtGui.QImage(output.data, output_width, output_height, output_bpl, QtGui.QImage.Format_RGB888)
-                self.numberplate.setImage(output_image)
-                now = time.time()
-                
-                if (now - self.last_time > 2):
-                    
-                    self.carLog.addItems([(numberplate)])
-                    self.last_time = now
-            except:
-                print "numberplate detector falied"
-            
-            
-            
-
-    def closeEvent(self, event):
-        global running
-        running = False
-
-
-class Form(QDialog):
-
-    def __init__(self,fruit,parent=None):
-        super(Form,self).__init__(parent)
-        self.qListWidget = QListWidget()
-        self.qListWidget.addItems(fruit)
-
-        button1 = QPushButton("Add")
-        button2 = QPushButton("Remove")
-        button3 = QPushButton("Edit")
-        button4 = QPushButton("Up")
-        button6 = QPushButton("Sort")
-        button7 = QPushButton("Close")
-        
-
-        buttonLayout = QVBoxLayout()
-        buttonLayout.addWidget(button1)
-        buttonLayout.addWidget(button2)
-        buttonLayout.addWidget(button3) 
-        buttonLayout.addWidget(button4)
-        buttonLayout.addWidget(button6)
-        buttonLayout.addWidget(button7)
-
-
-        layout = QHBoxLayout()
-        layout.addWidget(self.qListWidget)
-        layout.addLayout(buttonLayout)
-        self.setLayout(layout)
-
-        self.setWindowTitle("QListWidget")
-
-        self.connect(button1,SIGNAL("clicked()"),self.Add)
-        self.connect(button2,SIGNAL("clicked()"),self.Remove)
-        self.connect(button3,SIGNAL("clicked()"),self.Edit)
-        self.connect(button4,SIGNAL("clicked()"),self.Up)
-        self.connect(button6,SIGNAL("clicked()"),self.Sort)
-        self.connect(button7,SIGNAL("clicked()"),self.accept)
-        
-
-
+    
+    
     def Add(self):
 
         self.text,ok = QInputDialog.getText(self,'Input Dialog','Enter Value')
@@ -324,6 +187,82 @@ class Form(QDialog):
 
     def accept(self):
         QDialog.done(self,0)
+	
+
+    def update_frame(self):
+        global q
+        if not q.empty():
+            #self.startButton.setText('Camera is live')
+            frame = q.get()
+            img = frame
+
+            img_height, img_width, img_colors = img.shape
+            scale_w = float(self.window_width) / float(img_width)
+            scale_h = float(self.window_height) / float(img_height)
+            scale = min([scale_w, scale_h])
+
+            if scale == 0:
+                scale = 1
+            
+            img = cv2.resize(img, None, fx=scale, fy=scale, interpolation = cv2.INTER_CUBIC)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            height, width, bpc = img.shape
+            bpl = bpc * width
+            image = QtGui.QImage(img.data, width, height, bpl, QtGui.QImage.Format_RGB888)
+            self.input.setImage(image)
+
+
+
+
+            try:
+		ok,output , bbox = detect_car(frame)
+                
+                output = frame
+                #cv2.imshow("output",output)
+                output_height, output_width, output_colors = output.shape
+                output_scale_w = float(self.window_width) / float(output_width)
+                output_scale_h = float(self.window_height) / float(output_height)
+                output_scale = min([output_scale_w, output_scale_h])
+
+                if output_scale == 0:
+                    output_scale = 1
+            
+                output = cv2.resize(output, None, fx=output_scale, fy=output_scale, interpolation = cv2.INTER_CUBIC)
+                output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
+                output_height, output_width, output_bpc = output.shape
+                output_bpl = output_bpc * output_width
+                output_image = QtGui.QImage(output.data, output_width, output_height, output_bpl, QtGui.QImage.Format_RGB888)
+                self.detectedcar.setImage(output_image)
+            except:
+                print "car_detector failed"
+
+            
+
+            try:
+                
+                numberplate,confidence,output = (read_number_plate(frame))
+                output = cv2.resize(output, None, fx=1, fy=1, interpolation = cv2.INTER_CUBIC)
+                output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
+                output_height, output_width, output_bpc = output.shape
+                output_bpl = output_bpc * output_width
+                output_image = QtGui.QImage(output.data, output_width, output_height, output_bpl, QtGui.QImage.Format_RGB888)
+                self.numberplate.setImage(output_image)
+                now = time.time()
+                
+                if (now - self.last_time > 2):
+                    
+                    self.carLog.addItems([(numberplate)])
+                    self.last_time = now
+            except:
+                print "numberplate detector falied"
+            
+            
+            
+
+    def closeEvent(self, event):
+        global running
+        running = False
+
 
 
 capture_thread = threading.Thread(target=grab, args = (0, q, 1920, 1080, 30))
@@ -331,8 +270,6 @@ capture_thread = threading.Thread(target=grab, args = (0, q, 1920, 1080, 30))
 
 
 app = QtGui.QApplication(sys.argv)
-#fruit = ["Apple","Banana","Guave","Grape","Papaya","Mango"]
-#form = Form(fruit)
 w = MyWindowClass(None )
 w.setWindowTitle('Vehicle_Number_plate_logger')
 w.show()

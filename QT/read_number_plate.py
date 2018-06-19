@@ -19,19 +19,12 @@ def preprocess(img):
 		cv2.imshow("Sobel",sobelx)
 		#cv2.waitKey(0)
 	ret2,threshold_img = cv2.threshold(sobelx,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-	#cv2.imshow("Threshold",threshold_img)
-	#cv2.waitKey(0)
 	return threshold_img
 
 def cleanPlate(plate):
 	#print "CLEANING PLATE. . ."
 	gray = cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY)
-	#kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
-	#thresh= cv2.dilate(gray, kernel, iterations=1)
-
-	_, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
-	#thresh	   = cv2.adaptiveThreshold(gray,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)	
-	#thresh = (thresh1 + thresh2)/2	
+	 thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
 	im1,contours,hierarchy = cv2.findContours(thresh.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 	cv2.imshow("Function Test",thresh)
 	if contours:
@@ -149,10 +142,6 @@ def cleanAndRead(img,contours):
 if __name__ == '__main__':
 	print "DETECTING PLATE . . ."
 	List = glob.glob("../DATA/testData/*") 
-	#print(List)
-
-	#img = cv2.imread("testData/Final.JPG")
-
 	debug = True
 	for x in List:
 		pass
