@@ -6,9 +6,7 @@ import imutils
 from camera import VideoCamera
 
 
-#load car detector
-detector = dlib.fhog_object_detector("../DATA/SVM/car_detector.svm")
-win = dlib.image_window()
+
 
 
 
@@ -32,18 +30,22 @@ else:
     video_camera = VideoCamera(args["video"])
 
 def detect_car(frame):
+	#load car detector
+	detector = dlib.fhog_object_detector("../DATA/SVM/car_detector.svm")
+	#win = dlib.image_window()
 	try:
 		dets = detector(frame)
 		for d in dets:
 			#cv2.rectangle(frame, (d.left(), d.top()), (d.right(), d.bottom()), (0, 0, 255), 2)
 			#print (int(d.left()), int(d.top()) ), (int(d.right()), int(d.bottom()) )
 			frame = frame[int(d.top()):int(d.bottom()+20),int(d.left()): int(d.right()+20)]
-		cv2.imshow("HOG output",frame)
-		return frame
+		#cv2.imshow("HOG output",frame)
+		#print (int(d.left()) ,int(d.top()),int(d.right()+20-d.left()) ,int(d.bottom()+20-d.top()))
+		return True ,frame ,(int(d.left()) ,int(d.top()),int(d.right()+20-d.left()) ,int(d.bottom()+20-d.top()))
 			
 	except:
-		print "HOG detector failed"
-		return NONE
+		#print "HOG detector failed"
+		return False, None , None
 
 if __name__ == '__main__':
 	

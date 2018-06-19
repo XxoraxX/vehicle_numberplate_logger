@@ -12,7 +12,7 @@ import cv2
 
 # Sample image file is available at http://plates.openalpr.com/ea7the.jpg
 IMAGE_PATH = 'frame.jpg'
-SECRET_KEY = 'sk_df1b80fc1591519b091f2726'
+
 
 
 # construct the argument parse and parse the arguments
@@ -38,6 +38,7 @@ detector = dlib.fhog_object_detector("../DATA/SVM/car_detector.svm")
 win = dlib.image_window()
 
 def return_info(frame):
+	SECRET_KEY = 'sk_df1b80fc1591519b091f2726'
 	try:
                 dets = detector(frame)
                 for d in dets:
@@ -45,6 +46,36 @@ def return_info(frame):
                     #print (int(d.left()), int(d.top()) ), (int(d.right()), int(d.bottom()) )
                     frame = frame[int(d.top()):int(d.bottom()+20),int(d.left()): int(d.right()+20)]
                 cv2.imshow("HOG output",frame)
+                
+		cv2.imwrite("frame.jpg",frame)
+		with open(IMAGE_PATH, 'rb') as image_file:
+    			img_base64 = base64.b64encode(image_file.read())
+		url = 'https://api.openalpr.com/v2/recognize_bytes?recognize_vehicle=1&country=us&secret_key=%s' % (SECRET_KEY)
+		r = requests.post(url, data = img_base64)
+		
+		#print(json.dumps(r.json(), indent=2))
+		
+		plate = r.json()['results'][0]['plate']
+		
+		confidence = r.json()['results'][0]['confidence']
+		
+		plate_coordinates = r.json()['results'][0]['coordinates']
+		vehicle_colour = r.json()['results'][0]['vehicle']['color'][0]['name']
+		vehicle_make = r.json()['results'][0]['vehicle']['make'][0]['name']
+		vehicle_body_type = r.json()['results'][0]['vehicle']['body_type'][0]['name']
+		vehicle_year = r.json()['results'][0]['vehicle']['year'][0]['name']
+		vehicle_make_model = r.json()['results'][0]['vehicle']['make_model'][0]['name']
+		im = frame[plate_coordinates[0]['y']:plate_coordinates[2]['y']+20, plate_coordinates[0]['x']:plate_coordinates[1]['x']+20]
+		return plate , confidence , vehicle_colour , vehicle_make, vehicle_body_type, vehicle_year , vehicle_make_model , im
+	except:
+		print "HOG detector failed"
+	
+	return 0 , 0, 0 ,0,0,0,0,0
+
+def return_info2(frame):
+	SECRET_KEY = 'sk_df1b80fc1591519b091f2726'
+	try:
+                
                 
 		cv2.imwrite("frame.jpg",frame)
 		with open(IMAGE_PATH, 'rb') as image_file:
