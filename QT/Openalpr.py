@@ -35,6 +35,7 @@ else:
 
 
 def read_number_plate(im):
+	#initialize the openalpr class instance 
 	alpr = Alpr("us", "../DATA/runtime_data/config/us.conf", "../DATA/runtime_data")
 	if not alpr.is_loaded():
     		print("Error loading OpenALPR")
@@ -44,6 +45,7 @@ def read_number_plate(im):
 	alpr.set_default_region("ca")
 	results = alpr.recognize_ndarray(im)
 	i = 0
+	# extracting the json files
 	plate = results['results'][0]
 	candidate = plate['candidates'][0]
 	plate_coordinates = results['results'][0]['coordinates']	

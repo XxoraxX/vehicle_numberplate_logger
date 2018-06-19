@@ -53,7 +53,7 @@ form_class = uic.loadUiType("../DATA/UI/simple.ui")[0]
 q = Queue.Queue()
 frame = {}
  
-
+# captures the image and puts it into a queue
 def grab(cam, queue, width, height, fps):
     global running
     
@@ -68,6 +68,9 @@ def grab(cam, queue, width, height, fps):
             #print queue.qsize()
             pass
 
+
+
+#UI class
 class OwnImageWidget(QtGui.QWidget):
     def __init__(self, parent=None):
         super(OwnImageWidget, self).__init__(parent)
@@ -188,7 +191,7 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
     def accept(self):
         QDialog.done(self,0)
 	
-
+    # This is the function where the UI updates the frames 	
     def update_frame(self):
         global q
         if not q.empty():

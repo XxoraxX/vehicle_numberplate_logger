@@ -38,6 +38,8 @@ win = dlib.image_window()
 
 
 
+
+# We basically encode the image in 64 bit manner and send it over to the OpenAlpr cloud API
 def return_info(frame):
 	SECRET_KEY = 'sk_df1b80fc1591519b091f2726'
 	try:

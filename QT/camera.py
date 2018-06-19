@@ -30,6 +30,11 @@ class RecordingThread (threading.Thread):
     def __del__(self):
         self.out.release()
 
+
+
+## This is the class we import in all the other scripts
+
+
 class VideoCamera(object):
     def __init__(self,argument):
         # Open a camera

@@ -29,6 +29,10 @@ if not args.get("video", False):
 else:
     video_camera = VideoCamera(args["video"])
 
+
+
+# This is a simple Haar cascade method to detect cars
+
 class carDetector(object):
 	"""docstring for carDetector"""
 	def __init__(self):

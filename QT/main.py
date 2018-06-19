@@ -35,6 +35,10 @@ else:
 
 car_detector = carDetector()    
 
+
+
+
+# This function detects the number plate
 def detect_numberplate(im):
 	im_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY) / 255.
 	cv2.imshow("Input for deep leanring" , im)
@@ -73,7 +77,7 @@ def detect_numberplate(im):
     	
 	return im ,code
 
-
+# this is the main loop
 def loop():
 	frame = video_camera.get_frame()
 	try:

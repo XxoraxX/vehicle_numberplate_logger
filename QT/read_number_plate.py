@@ -9,6 +9,8 @@ debug = False
 
 import Openalpr
 
+
+# This is an unused metod , used traditional tesseract OCR method
 def preprocess(img):
 	
 	imgBlurred = cv2.GaussianBlur(img, (5,5), 0)

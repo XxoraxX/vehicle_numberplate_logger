@@ -29,6 +29,9 @@ if not args.get("video", False):
 else:
     video_camera = VideoCamera(args["video"])
 
+
+
+## This is the main function for detecting the car using the HOG method
 def detect_car(frame):
 	#load car detector
 	detector = dlib.fhog_object_detector("../DATA/SVM/car_detector.svm")
