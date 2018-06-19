@@ -7,6 +7,9 @@ from camera import VideoCamera
 from hog_detector import detect_car
 import dlib
 
+from carDetector import *
+car_detect = carDetector()
+
 #load car detector
 detector = dlib.fhog_object_detector("../DATA/SVM/car_detector.svm")
 win = dlib.image_window()
@@ -60,19 +63,23 @@ if __name__ == '__main__':
 			# The input is fed into the detect_car function which is inside the hog_detector
 			try:
 				status = False
-				status,output_hog,bbox = detect_car(frame)
-				#Hog returns the status , cropped out image , bounding box 
-				print status , bbox
+				#status,output_hog,bbox = detect_car(frame)
+				#Hog returns the status , cropped out image , bounding box
+				car_detect.update_frame(frame)
+				car_detect.detect_car()
+				output = car_detect.get_detected_car()
+				cv2.imshow("Hog", output) 
+				#print status , bbox
 				if True:
 					plate,confidence,out = read_number_plate(frame)
 					print plate , confidence
 					cv2.imshow("cropped plate",out)
-					cv2.imshow("Hog", output_hog)
+					
 			
 			except:
-				print "Hog failed"
+				pass
 		except:
-			print "failed"
+			pass
 
 		
 		key = cv2.waitKey(1) & 0xFF
