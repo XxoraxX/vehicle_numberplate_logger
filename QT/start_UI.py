@@ -217,7 +217,7 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
             try:
 		ok,output , bbox = detect_car(frame)
                 
-                output = frame
+                #output = frame
                 #cv2.imshow("output",output)
                 output_height, output_width, output_colors = output.shape
                 output_scale_w = float(self.window_width) / float(output_width)

@@ -4,7 +4,7 @@ import cv2
 import argparse
 import imutils
 from camera import VideoCamera
-
+from skimage import io
 
 
 
@@ -36,11 +36,9 @@ def detect_car(frame):
 	try:
 		dets = detector(frame)
 		for d in dets:
-			#cv2.rectangle(frame, (d.left(), d.top()), (d.right(), d.bottom()), (0, 0, 255), 2)
-			#print (int(d.left()), int(d.top()) ), (int(d.right()), int(d.bottom()) )
 			frame = frame[int(d.top()):int(d.bottom()+20),int(d.left()): int(d.right()+20)]
-		#cv2.imshow("HOG output",frame)
-		#print (int(d.left()) ,int(d.top()),int(d.right()+20-d.left()) ,int(d.bottom()+20-d.top()))
+			 # Display the resulting frame
+			cv2.imshow("frame",frame)
 		return True ,frame ,(int(d.left()) ,int(d.top()),int(d.right()+20-d.left()) ,int(d.bottom()+20-d.top()))
 			
 	except:
@@ -55,7 +53,10 @@ if __name__ == '__main__':
 			cv2.imshow("input",frame)
 		except:
 			print "failed"
-		detect_car(frame)
+		status , output , bbox = detect_car(frame)
+		print status , bbox
+		if status:
+			cv2.imshow("HOGoutput", output)
 		key = cv2.waitKey(1) & 0xFF
 
 		# if the 'q' key is pressed, stop the loop

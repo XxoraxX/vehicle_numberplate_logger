@@ -38,6 +38,7 @@ car_detector = carDetector()
 def detect_numberplate(im):
 	im_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY) / 255.
 	cv2.imshow("Input for deep leanring" , im)
+	#Loading the model
     	f = numpy.load(args["model"])
     	param_vals = [f[n] for n in sorted(f.files, key=lambda s: int(s[4:]))]
     	print ("RUN")
@@ -87,9 +88,7 @@ def loop():
 		frame = frame[int(d.top()):int(d.bottom()+20),int(d.left()): int(d.right()+20)]
 		cv2.imshow("HOG output",frame)
 		try:
-			#t1 = threading.Thread(target=detect_numberplate, args=(frame , ))
-			#t1.start()
-			#t1.join()
+			
 			detect_numberplate(frame)
 		except:
 			print("Deep learning failed ")
@@ -137,18 +136,7 @@ def loop():
 	except:
 		print "HOG detector failed"
 
-     
-	#car_detector.update_frame(frame)
-
-	#try:
-	#	car_detector.detect_car()
-		#cv2.imshow("output",car_detector.get_detected_car())
-	#except:
-	#	print "car_detector failed"
-
-	
-	
-			
+     	
 	
 
 if __name__ == '__main__':

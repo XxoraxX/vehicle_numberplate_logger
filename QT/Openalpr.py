@@ -5,6 +5,12 @@ import argparse
 import imutils
 from camera import VideoCamera
 from hog_detector import detect_car
+import dlib
+
+#load car detector
+detector = dlib.fhog_object_detector("../DATA/SVM/car_detector.svm")
+win = dlib.image_window()
+
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-v", "--video",
@@ -40,33 +46,38 @@ def read_number_plate(im):
 	plate_coordinates = results['results'][0]['coordinates']	
 	
 	alpr.unload()
-	im = im[plate_coordinates[0]['y']:plate_coordinates[2]['y']+20, plate_coordinates[0]['x']:plate_coordinates[1]['x']+20]
-	return candidate['plate'] , candidate['confidence'] , im
+	out = im[plate_coordinates[0]['y']:plate_coordinates[2]['y']+20, plate_coordinates[0]['x']:plate_coordinates[1]['x']+20]
+	return candidate['plate'] , candidate['confidence'] , out
 
 
 if __name__ == '__main__':
 	
 	while True:
 		frame = video_camera.get_frame()
+		
+		try:
+			cv2.imshow("input",frame)
+			# The input is fed into the detect_car function which is inside the hog_detector
+			try:
+				status = False
+				status,output_hog,bbox = detect_car(frame)
+				#Hog returns the status , cropped out image , bounding box 
+				print status , bbox
+				if True:
+					plate,confidence,out = read_number_plate(frame)
+					print plate , confidence
+					cv2.imshow("cropped plate",out)
+					cv2.imshow("Hog", output_hog)
+			
+			except:
+				print "Hog failed"
+		except:
+			print "failed"
+
+		
 		key = cv2.waitKey(1) & 0xFF
 
 		# if the 'q' key is pressed, stop the loop
 		if key == ord("q"):
 			break
-		try:
-			cv2.imshow("input",frame)
-		except:
-			print "failed"
-		try:
-			out = detect_car(frame)
-			try: 	
-				_,_,out = (read_number_plate(out))
-				cv2.imshow("cropped plate",out)
-				#read_number_plate(frame)
-			except:
-				print "numberplate not found"
-			
-		except:
-			print "Hog failed"
-
 		

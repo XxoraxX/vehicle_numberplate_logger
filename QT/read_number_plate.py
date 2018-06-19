@@ -24,7 +24,7 @@ def preprocess(img):
 def cleanPlate(plate):
 	#print "CLEANING PLATE. . ."
 	gray = cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY)
-	 thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+	thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
 	im1,contours,hierarchy = cv2.findContours(thresh.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 	cv2.imshow("Function Test",thresh)
 	if contours:
