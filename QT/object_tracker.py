@@ -51,16 +51,6 @@ def object_tracker(frame , bbox):
             tracker = cv2.TrackerMedianFlow_create()
         if tracker_type == 'GOTURN':
             tracker = cv2.TrackerGOTURN_create()
- 
-    
-     
-    # Define an initial bounding box
-    #bbox = (287, 23, 86, 320)
- 
-    # Uncomment the line below to select a different bounding box
-    #bbox = cv2.selectROI(frame, False)
-    #print bbox
-    # Initialize tracker with first frame and bounding box
     ok = tracker.init(frame, bbox)
     	
     while ok:

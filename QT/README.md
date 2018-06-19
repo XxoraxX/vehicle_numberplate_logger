@@ -4,7 +4,8 @@
 - OpenCV
 - tesseracact OCR
 - QT for UI
-
+- dlib 
+- openalpr
 ### Individual Scripts
 
 - **main.py**
